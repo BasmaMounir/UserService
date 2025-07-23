@@ -34,6 +34,14 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
+
+
     @PutMapping("/{userId}/role")
     public ResponseEntity<String> updateUserRole(@PathVariable Long userId, @RequestBody Map<String, String> payload) {
         String newRole = payload.get("role");

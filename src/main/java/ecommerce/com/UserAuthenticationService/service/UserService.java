@@ -9,6 +9,8 @@ public interface UserService {
 
     List<User> getAllUsers();
 
+    User getUserById(Long id);
+
     ResponseEntity<String> updateUserRole(Long userId, String newRole);
 
     ResponseEntity<String> activateUser(Long userId);
