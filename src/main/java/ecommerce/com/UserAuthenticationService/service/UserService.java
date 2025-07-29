@@ -9,7 +9,7 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    User getUserById(Long id);
+    User getUserByEmail(String email);
 
     ResponseEntity<String> updateUserRole(Long userId, String newRole);
 

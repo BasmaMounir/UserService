@@ -28,7 +28,7 @@ public class SecurityConfig {
                         configure -> configure
                                 .requestMatchers(HttpMethod.GET,"/users/check-role").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/users/{id}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/users/email").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/users/{userId}/**").hasRole("ADMIN")
                                 .requestMatchers("/auth/**").permitAll()
                                 .anyRequest().authenticated()

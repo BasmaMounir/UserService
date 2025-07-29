@@ -34,12 +34,11 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user = userService.getUserById(id);
+    @GetMapping("email")
+    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+        User user = userService.getUserByEmail(email);
         return ResponseEntity.ok(user);
     }
-
 
     @PutMapping("/{userId}/role")
     public ResponseEntity<String> updateUserRole(@PathVariable Long userId, @RequestBody Map<String, String> payload) {
