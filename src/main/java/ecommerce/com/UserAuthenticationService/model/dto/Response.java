@@ -9,15 +9,23 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorResponse {
+public class Response {
     private String message;
-    private int status;
+    private String email;
+    private String token;
     private LocalDateTime timestamp;
 
-    public ErrorResponse(String message, int status) {
+    public Response(String message) {
         this.message = message;
-        this.status = status;
         this.timestamp = LocalDateTime.now();
+    }
+
+    public Response(String message, String email, String token) {
+        this.message = message;
+        this.email = email;
+        this.token = token;
+        this.timestamp = LocalDateTime.now();
+
     }
 }
 

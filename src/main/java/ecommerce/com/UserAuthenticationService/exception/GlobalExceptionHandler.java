@@ -1,6 +1,6 @@
 package ecommerce.com.UserAuthenticationService.exception;
 
-import ecommerce.com.UserAuthenticationService.model.dto.ErrorResponse;
+import ecommerce.com.UserAuthenticationService.model.dto.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,9 +15,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.CONFLICT.value());
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    public ResponseEntity<Response> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        return  ResponseEntity.status(HttpStatus.CONFLICT).body(new Response(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -29,8 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        ErrorResponse error = new ErrorResponse("An unexpected problem occurred, please try again later.", HttpStatus.BAD_REQUEST.value());
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Response> handleGenericException(Exception ex) {
+        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response("An unexpected problem occurred, please try again later."));
     }
 }
