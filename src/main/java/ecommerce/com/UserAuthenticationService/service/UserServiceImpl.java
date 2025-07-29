@@ -28,8 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() ->
-                new UsernameNotFoundException("User Not Found!"));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found!"));
     }
 
     @Override
@@ -42,9 +42,10 @@ public class UserServiceImpl implements UserService {
                 userRepository.save(user);
                 return ResponseEntity.ok("User role updated successfully to " + newRole);
             } catch (IllegalArgumentException e) {
-                return new ResponseEntity<>("Invalid role specified: " + newRole + ". Valid roles are: " + List.of(Role.values()), HttpStatus.BAD_REQUEST);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                        "Invalid role specified: " + newRole + ". Valid roles are: " + List.of(Role.values()));
             }
-        }).orElse(new ResponseEntity<>("User not found with ID: " + userId, HttpStatus.NOT_FOUND));
+        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with ID: " + userId));
     }
 
     @Override
@@ -52,12 +53,12 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<String> activateUser(Long userId) {
         return userRepository.findById(userId).map(user -> {
             if (user.isEnabled()) {
-                return new ResponseEntity<>("User with ID: " + userId + " is already active.", HttpStatus.CONFLICT);
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User already active");
             }
             user.setEnabled(true);
             userRepository.save(user);
-            return ResponseEntity.ok("User with ID: " + userId + " activated successfully.");
-        }).orElse(new ResponseEntity<>("User not found with ID: " + userId, HttpStatus.NOT_FOUND));
+            return ResponseEntity.ok("User activated successfully");
+        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found"));
     }
 
     @Override
@@ -65,25 +66,22 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<String> deactivateUser(Long userId) {
         return userRepository.findById(userId).map(user -> {
             if (!user.isEnabled()) {
-                return new ResponseEntity<>("User with ID: " + userId + " is already deactivated.", HttpStatus.CONFLICT);
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User already deactivated");
             }
             user.setEnabled(false);
             userRepository.save(user);
-            return ResponseEntity.ok("User with ID: " + userId + " deactivated successfully.");
-        }).orElse(new ResponseEntity<>("User not found with ID: " + userId, HttpStatus.NOT_FOUND));
+            return ResponseEntity.ok("User deactivated successfully");
+        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found"));
     }
 
     @Override
     @Transactional
     public ResponseEntity<String> deleteUser(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            return new ResponseEntity<>("User not found with ID: " + userId, HttpStatus.NOT_FOUND);
-        }
-        userRepository.delete(userOptional.get());
-        return ResponseEntity.ok("User with ID: " + userId + " deleted successfully.");
+        return userRepository.findById(userId).map(user -> {
+            userRepository.delete(user);
+            return ResponseEntity.ok("User deleted successfully");
+        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found"));
     }
-
 
     @Override
     public boolean checkUserRole(String token, String requiredRole) {
